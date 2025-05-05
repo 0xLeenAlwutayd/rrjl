@@ -1,4 +1,5 @@
 # Stage 7 - Manual Deployment
+# github actions
 
 Based on the architecture of stage 6, we add 5 new resources to the infrastructure:
 
