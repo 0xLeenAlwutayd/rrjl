@@ -35,12 +35,12 @@ jobs:
           source venv/bin/activate
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt --target=".python_packages/lib/site-packages"
 
       # Optional: Add step to run tests here
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run:  zip -r release.zip ./* .python_packages/*
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -72,6 +72,11 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_1FD15F52EB084ACE8BD1C83FFA045E40 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_442741B65F3242FBAE27D7DD37E58F22 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_55DDC51B6C4B411FB2B237C6BB21B6F6 }}
+
+
+      - name: Set Application Settings
+        run: |
+          az functionapp config appsettings set --name leen-func-app-2025 --resource-group dev-terraform-vm-wyx --settings "FUNCTIONS_WORKER_RUNTIME=python" "KEY_VAULT_NAME=leen-keyvault" "APPINSIGHTS_INSTRUMENTATIONKEY=azurerm_application_insights.ai.instrumentation_key"   
 
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
